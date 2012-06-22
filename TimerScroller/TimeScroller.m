@@ -20,6 +20,7 @@
     
     
 }
+
 @property (nonatomic, copy) NSDateFormatter *timeDateFormatter;
 @property (nonatomic, copy) NSDateFormatter *dayOfWeekDateFormatter;
 @property (nonatomic, copy) NSDateFormatter *monthDayDateFormatter;
@@ -128,11 +129,11 @@
 
 
 - (void)setCalendar:(NSCalendar *)cal{
-
+    
     _calendar = cal;
     
     [self createFormatters];
-
+    
 }
 
 
@@ -143,9 +144,11 @@
     self.frame = CGRectMake(CGRectGetWidth(self.frame) - 10.0f, 0.0f, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
     
     for (id subview in [_tableView subviews]) {
+        
         if ([subview isKindOfClass:[UIImageView class]]) {
             
             UIImageView *imageView = (UIImageView *)subview;
+            
             if (imageView.frame.size.width == 7.0f) {
                 
                 imageView.clipsToBounds = NO;
@@ -155,6 +158,7 @@
             }
             
         }
+        
     }
     
 }
@@ -171,9 +175,9 @@
     NSDateComponents *dateComponents = [self.calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekOfYearCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:date];
     NSDateComponents *todayComponents = [self.calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekOfYearCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:today];
     NSDateComponents *lastDateComponents = [self.calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekOfYearCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:_lastDate];
-        
+    
     _timeLabel.text = [self.timeDateFormatter stringFromDate:date];
-
+    
     CGFloat currentHourAngle = 0.5f * ((lastDateComponents.hour * 60.0f) + lastDateComponents.minute);
     CGFloat newHourAngle = 0.5f * ((dateComponents.hour * 60.0f) + dateComponents.minute);
     CGFloat currentMinuteAngle = 6.0f * lastDateComponents.minute;
@@ -195,14 +199,14 @@
     CGFloat minutePartFour;
     
     if (newHourAngle > currentHourAngle && [date timeIntervalSinceDate:_lastDate] > 0) {
-     
+        
         CGFloat diff = newHourAngle - currentHourAngle;
         CGFloat part = diff / 4.0f;
         hourPartOne = currentHourAngle + part;
         hourPartTwo = hourPartOne + part;
         hourPartThree = hourPartTwo + part;
         hourPartFour = hourPartThree + part;
-                
+        
     } else if (newHourAngle < currentHourAngle && [date timeIntervalSinceDate:_lastDate] > 0) {
         
         CGFloat diff = (360 - currentHourAngle) + newHourAngle;
@@ -211,7 +215,7 @@
         hourPartTwo = hourPartOne + part;
         hourPartThree = hourPartTwo + part;
         hourPartFour = hourPartThree + part;
-                
+        
     } else if (newHourAngle > currentHourAngle && [date timeIntervalSinceDate:_lastDate] < 0) {
         
         CGFloat diff = ((currentHourAngle) * -1.0f) - (360 - newHourAngle);
@@ -220,7 +224,7 @@
         hourPartTwo = hourPartOne + part;
         hourPartThree = hourPartTwo + part;
         hourPartFour = hourPartThree + part;
-                
+        
     } else if (newHourAngle < currentHourAngle && [date timeIntervalSinceDate:_lastDate] < 0) {
         
         CGFloat diff = currentHourAngle - newHourAngle;
@@ -229,7 +233,11 @@
         hourPartTwo = hourPartOne - part;
         hourPartThree = hourPartTwo - part;
         hourPartFour = hourPartThree - part;
-                
+        
+    } else {
+        
+        hourPartOne = hourPartTwo = hourPartThree = hourPartFour = currentHourAngle;
+        
     }
     
     if (newMinuteAngle > currentMinuteAngle && [date timeIntervalSinceDate:_lastDate] > 0) {
@@ -268,43 +276,47 @@
         minutePartThree = minutePartTwo - part;
         minutePartFour = minutePartThree - part;
         
+    } else {
+        
+        minutePartOne = minutePartTwo = minutePartThree = minutePartFour = currentMinuteAngle;
+        
     }
     
-        [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn animations:^{
-           
-            _hourHand.transform =  CGAffineTransformMakeRotation(hourPartOne * (M_PI / 180.0f));
-            _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartOne * (M_PI / 180.0f));
-
+    [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn animations:^{
+        
+        _hourHand.transform =  CGAffineTransformMakeRotation(hourPartOne * (M_PI / 180.0f));
+        _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartOne * (M_PI / 180.0f));
+        
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveLinear animations:^{
+            
+            _hourHand.transform =  CGAffineTransformMakeRotation(hourPartTwo * (M_PI / 180.0f));
+            _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartTwo * (M_PI / 180.0f));
+            
         } completion:^(BOOL finished) {
             
             [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveLinear animations:^{
                 
-                _hourHand.transform =  CGAffineTransformMakeRotation(hourPartTwo * (M_PI / 180.0f));
-                _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartTwo * (M_PI / 180.0f));
-
+                _hourHand.transform =  CGAffineTransformMakeRotation(hourPartThree * (M_PI / 180.0f));
+                _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartThree * (M_PI / 180.0f));
+                
             } completion:^(BOOL finished) {
                 
-                [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveLinear animations:^{
+                [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
                     
-                    _hourHand.transform =  CGAffineTransformMakeRotation(hourPartThree * (M_PI / 180.0f));
-                    _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartThree * (M_PI / 180.0f));
-
+                    _hourHand.transform =  CGAffineTransformMakeRotation(hourPartFour * (M_PI / 180.0f));
+                    _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartFour * (M_PI / 180.0f));
+                    
                 } completion:^(BOOL finished) {
-                    
-                    [UIView animateWithDuration:0.075f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
-                        
-                        _hourHand.transform =  CGAffineTransformMakeRotation(hourPartFour * (M_PI / 180.0f));
-                        _minuteHand.transform =  CGAffineTransformMakeRotation(minutePartFour * (M_PI / 180.0f));
-                        
-                    } completion:^(BOOL finished) {
-                        
-                    }];
                     
                 }];
                 
             }];
             
         }];
+        
+    }];
     
     if (_lastDate) {
         
@@ -314,23 +326,23 @@
     _lastDate = date;
     
     
-    CGRect backgroundFrame = _backgroundView.frame;
-    CGRect timeLabelFrame = _timeLabel.frame;
+    CGRect backgroundFrame;
+    CGRect timeLabelFrame;
     CGRect dateLabelFrame = _dateLabel.frame;
-    NSString *dateLabelString = _dateLabel.text;
+    NSString *dateLabelString;
     NSString *timeLabelString = _timeLabel.text;
-    CGFloat dateLabelAlpha = _dateLabel.alpha;
+    CGFloat dateLabelAlpha;
     
     if (dateComponents.year == todayComponents.year && dateComponents.month == todayComponents.month && dateComponents.day == todayComponents.day) {
         
         dateLabelString = @"";
-  
+        
         backgroundFrame = CGRectMake(CGRectGetWidth(self.frame) - 80.0f, 0.0f, 80.0f, CGRectGetHeight(self.frame));
         timeLabelFrame = CGRectMake(30.0f, 4.0f, 100.0f, 20.0f);
         dateLabelAlpha = 0.0f;
         
     } else if ((dateComponents.year == todayComponents.year) && (dateComponents.month == todayComponents.month) && (dateComponents.day == todayComponents.day - 1)) {
-
+        
         timeLabelFrame = CGRectMake(30.0f, 4.0f, 100.0f, 10.0f);
         
         dateLabelString = @"Yesterday";
@@ -338,7 +350,7 @@
         backgroundFrame = CGRectMake(CGRectGetWidth(self.frame) - 85.0f, 0.0f, 85.0f, CGRectGetHeight(self.frame));
         
     } else if ((dateComponents.year == todayComponents.year) && (dateComponents.weekOfYear == todayComponents.weekOfYear)) {
-
+        
         timeLabelFrame = CGRectMake(30.0f, 4.0f, 100.0f, 10.0f);                
         dateLabelString = [self.dayOfWeekDateFormatter stringFromDate:date];
         dateLabelAlpha = 1.0f;
@@ -353,7 +365,7 @@
         backgroundFrame = CGRectMake(CGRectGetWidth(self.frame) - width, 0.0f, width, CGRectGetHeight(self.frame));
         
     } else if (dateComponents.year == todayComponents.year) {
-
+        
         timeLabelFrame = CGRectMake(30.0f, 4.0f, 100.0f, 10.0f);
         
         dateLabelString = [self.monthDayDateFormatter stringFromDate:date];
@@ -364,7 +376,7 @@
         backgroundFrame = CGRectMake(CGRectGetWidth(self.frame) - width, 0.0f, width, CGRectGetHeight(self.frame));
         
     } else {
-
+        
         timeLabelFrame = CGRectMake(30.0f, 4.0f, 100.0f, 10.0f);
         dateLabelString = [self.monthDayYearDateFormatter stringFromDate:date];
         dateLabelAlpha = 1.0f;
@@ -372,7 +384,7 @@
         CGFloat width = [dateLabelString sizeWithFont:_dateLabel.font].width + 50.0f;
         
         backgroundFrame = CGRectMake(CGRectGetWidth(self.frame) - width, 0.0f, width, CGRectGetHeight(self.frame));
-
+        
     } 
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowAnimatedContent animations:^{
@@ -426,8 +438,10 @@
     [_tableView.superview addSubview:self];
     
     [UIView animateWithDuration:0.3f delay:1.0f options:UIViewAnimationOptionBeginFromCurrentState  animations:^{
+        
         self.alpha = 0.0f;
         self.transform = CGAffineTransformMakeTranslation(10.0f, 0.0f);
+        
     } completion:^(BOOL finished) {
         
     }];
@@ -449,12 +463,13 @@
     [_scrollBar addSubview:self];
     
     [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState  animations:^{
+        
         self.alpha = 1.0f;
         self.transform = CGAffineTransformIdentity;
+        
     } completion:^(BOOL finished) {
         
     }];
-    
     
 }
 
