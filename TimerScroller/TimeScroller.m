@@ -51,7 +51,7 @@
         
         self.calendar = [NSCalendar currentCalendar];
         
-        self.frame = CGRectMake(0.0f, 0.0f, 320.0f, CGRectGetHeight(self.frame));
+        self.frame = CGRectMake(0.0f, 0.0f, 320.0f, 31.0);
         self.alpha = 0.0f;
         self.transform = CGAffineTransformMakeTranslation(10.0f, 0.0f);
         
