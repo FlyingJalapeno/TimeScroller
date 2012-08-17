@@ -141,7 +141,7 @@
     
     _tableView = [self.delegate tableViewForTimeScroller:self];
     
-    self.frame = CGRectMake(CGRectGetWidth(self.frame) - 10.0f, 0.0f, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+    self.frame = CGRectMake(CGRectGetWidth(self.frame) - 10.0f, 0.0f, CGRectGetWidth(self.frame), 31.0);
     
     for (id subview in [_tableView subviews]) {
         
@@ -416,8 +416,8 @@
     self.frame = CGRectMake(CGRectGetWidth(selfFrame) * -1.0f,
                             (CGRectGetHeight(scrollBarFrame) / 2.0f) - (CGRectGetHeight(selfFrame) / 2.0f),
                             CGRectGetWidth(selfFrame),
-                            CGRectGetHeight(selfFrame));
-    
+                            31.0);
+        
     CGPoint point = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
     point = [_scrollBar convertPoint:point toView:_tableView];
     
@@ -429,6 +429,12 @@
         
     }
     
+}
+
+- (void)hideNow{
+    
+    self.alpha = 0.0f;
+    self.transform = CGAffineTransformMakeTranslation(10.0f, 0.0f);
 }
 
 - (void)scrollViewDidEndDecelerating {

@@ -49,4 +49,6 @@
 - (void)scrollViewDidEndDecelerating;
 - (void)scrollViewWillBeginDragging;
 
+- (void)hideNow;
+
 @end
