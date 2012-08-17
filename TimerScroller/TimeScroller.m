@@ -46,7 +46,7 @@
     
     UIImage *background = [[UIImage imageNamed:@"timescroll_pointer"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.0f, 35.0f, 0.0f, 10.0f)];
     
-    self = [super initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, background.size.height)];
+    self = [super initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 31.0)];
     if (self) {
         
         self.calendar = [NSCalendar currentCalendar];
