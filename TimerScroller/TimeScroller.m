@@ -423,11 +423,25 @@
     
     UIView *view = [_tableView hitTest:point withEvent:nil];
     
-    if ([view.superview isKindOfClass:[UITableViewCell class]]) {
-        
-        [self updateDisplayWithCell:(UITableViewCell *)view.superview];
-        
-    }
+    UITableViewCell* theCell = [self findCellContainingView:view searchDepth:5];
+    
+    if(theCell)
+        [self updateDisplayWithCell:theCell];
+    
+}
+
+- (UITableViewCell*)findCellContainingView:(UIView*)aView searchDepth:(int)depth{
+    
+    if(depth == 0)
+        return nil;
+    
+    if(aView == nil)
+        return nil;
+    
+    if([aView isKindOfClass:[UITableViewCell class]])
+        return (UITableViewCell*)aView;
+    
+    return [self findCellContainingView:aView.superview searchDepth:depth-1];
     
 }
 
